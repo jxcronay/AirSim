@@ -8,7 +8,7 @@ set -e
 set -x
 
 debug=false
-gcc=false
+gcc=true #false
 # Parse command line arguments
 while [[ $# -gt 0 ]]
 do
@@ -53,7 +53,7 @@ if $debug; then
     build_dir=build_debug
 else
     build_dir=build_release
-fi 
+fi
 if [ "$(uname)" == "Darwin" ]; then
     # llvm v8 is too old for Big Sur see
     # https://github.com/microsoft/AirSim/issues/3691
@@ -64,8 +64,8 @@ if [ "$(uname)" == "Darwin" ]; then
     export CXX="$(brew --prefix)/opt/llvm/bin/clang++"
 else
     if $gcc; then
-        export CC="gcc-8"
-        export CXX="g++-8"
+        export CC="gcc-11" # 8
+        export CXX="g++-11" # 8
     else
         export CC="clang-8"
         export CXX="clang++-8"
@@ -104,7 +104,7 @@ pushd $build_dir  >/dev/null
 if $debug; then
     folder_name="Debug"
     "$CMAKE" ../cmake -DCMAKE_BUILD_TYPE=Debug $CMAKE_VARS \
-        || (popd && rm -r $build_dir && exit 1)   
+        || (popd && rm -r $build_dir && exit 1)
 else
     folder_name="Release"
     "$CMAKE" ../cmake -DCMAKE_BUILD_TYPE=Release $CMAKE_VARS \
